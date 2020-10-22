@@ -1,2 +1,9 @@
 # QGis2Three_ocean
-Quick improvment of the QGis2Three plugin to add a Skybox and an Ocean
+
+QGIS2Three is an amazing QGIS plugin allowing us to create a Threejs 3D project with our GIS data whithout having to deal with any code.
+
+I've used it a lot of time and was frustrated because a couldn't add features as a Skybox, water layer or clouds. So I decided to develop a little piece of code allowing users to add those features.
+
+Its still in progress but i'm seeing encouraging results. One of the major improvment we can make is probably around rendering efficienty, and as always any proposition would be a precious help.
+
+ND
