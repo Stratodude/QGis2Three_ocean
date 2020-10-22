@@ -2,7 +2,7 @@
 
 ![example_img](/ex.png)
 
-[QGIS2Three](https://github.com/minorua/Qgis2threejs){:target="_blank"} is an amazing QGIS plugin allowing us to create a Threejs 3D project with our GIS data whithout having to deal with any code.
+<a href="https://github.com/minorua/Qgis2threejs" target="_blank">Qgis2threejs</a> is an amazing QGIS plugin allowing us to create a Threejs 3D project with our GIS data whithout having to deal with any code.
 
 I've used it a lot of time and was frustrated because a couldn't add features as a Skybox, water layer or clouds. So I decided to dive into the code to make some slight changes allowing it.
 
