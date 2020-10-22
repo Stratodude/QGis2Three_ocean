@@ -1,6 +1,6 @@
 # QGis2Three_ocean
 
-![example_img](/images/ex.png)
+![example_img](/ex.png)
 
 QGIS2Three is an amazing QGIS plugin allowing us to create a Threejs 3D project with our GIS data whithout having to deal with any code.
 
