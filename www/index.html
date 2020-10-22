@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>index</title>
+<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+<link rel="stylesheet" type="text/css" href="./Qgis2threejs.css">
+<script src="./threejs/three.min.js"></script>
+<script src="./threejs/OrbitControls.js"></script>
+
+<script src="./dat-gui/dat.gui.min.js"></script>
+<script src="./Qgis2threejs.js"></script>
+<script src="./dat-gui_panel.js"></script>
+<script src="./threejs/water.js"></script>
+<!-- Bootstrap CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" />
+
+<link rel="stylesheet" type="text/css" href="../../css/animate.css" />
+
+</head>
+<style>
+
+  body {
+  font-family: 'Poppins', sans-serif;
+  }
+
+  .container{
+    margin:0;
+    padding:0;
+  }
+
+  .row{
+    margin:0;
+    padding:0;
+  }
+
+  #view { 
+    height: 100vh;
+    margin-left: -15px;
+    margin-right: -15px;
+  }
+</style>
+<body>
+    <div class="container" style>
+      <div class="row" style="width:100vw;height: 100vh;">
+        <div class="col-lg-6" style="background-color: rgb(30, 30, 30); color: white">
+          <table style="width:100%;height: 100vh;">
+              <tr>
+                <td valign="center" style="text-align: right;">
+                  <h1 style="font-size: 5.5rem;">Threejs</br>3D Maps</h1></br>
+                  <p id="" style="">QGIS2Three is an amazing QGIS plugin allowing us to create a Threejs 3D project with our GIS data whithout having to deal with any code.</p>
+                  <p id="" style="">I've used it a lot of time and was frustrated because a couldn't add features as a Skybox, water layer or clouds. So I decided to develop a little piece of code allowing users to add those features.</p>
+                  <p id="" style="">Its still in progress but i'm seeing encouraging results. One of the major improvment we can make is probably around rendering efficienty, and as always any proposition would be a precious help.</p>
+                </td>
+              </tr>
+          </table>
+        </div>
+        <div class="col-lg-6" >
+          <div id="loader" style="position: absolute;top:0;width:100%;z-index: 2000;right: 0;background-color: #000000c4;height:100%;color:white;"><i class="fas fa-cog fa-spin fa-9x" style="top:40%; right:40%; position:absolute"></i></div>
+            <div id="view">
+            <div id="labels"></div>
+            <div id="northarrow"></div>
+          </div>
+
+          <!-- popup -->
+          <div id="popup">
+            <div id="closebtn">&times;</div>
+            <div id="popupbar"></div>
+            <div id="popupbody">
+              <div id="popupcontent"></div>
+
+              <!-- query result -->
+              <div id="queryresult">
+                <table id="qr_layername_table">
+                  <caption>Layer name</caption>
+                  <tr><td id="qr_layername"></td></tr>
+                </table>
+
+                <table id="qr_coords_table">
+                  <caption>Clicked coordinates</caption>
+                  <tr><td id="qr_coords"></td></tr>
+                </table>
+
+                <!-- camera actions -->
+                <div class="action-btn action-zoom" onclick="app.cameraAction.zoomIn(); app.closePopup();">Zoom in here</div>
+                <div class="action-btn action-move" onclick="app.cameraAction.move(); app.closePopup();">Move here</div>
+                <div class="action-btn action-orbit" onclick="app.cameraAction.orbit(); app.closePopup();">Orbit around here</div>
+
+                <!-- attributes -->
+                <table id="qr_attrs_table">
+                  <caption>Attributes</caption>
+                </table>
+              </div>
+
+              <!-- page info -->
+              <div id="pageinfo">
+                <h1>Current View URL</h1>
+                <div><input id="urlbox" type="text"></div>
+
+                <h1>Usage</h1>
+                <table id="usage">
+                  <tr><td colspan="2" class="star">Mouse</td></tr>
+                  <tr><td>Left button + Move</td><td>Orbit</td></tr>
+                  <tr><td>Mouse Wheel</td><td>Zoom</td></tr>
+                  <tr><td>Right button + Move</td><td>Pan</td></tr>
+
+                  <tr><td colspan="2" class="star">Keys</td></tr>
+                  <tr><td>Arrow keys</td><td>Move Horizontally</td></tr>
+                  <tr><td>Shift + Arrow keys</td><td>Orbit</td></tr>
+                  <tr><td>Ctrl + Arrow keys</td><td>Rotate</td></tr>
+                  <tr><td>Shift + Ctrl + Up / Down</td><td>Zoom In / Out</td></tr>
+                  <tr><td>L</td><td>Toggle Label Visibility</td></tr>
+                  <tr><td>R</td><td>Start / Stop Rotate Animation (Orbiting)</td></tr>
+                  <tr><td>W</td><td>Wireframe Mode</td></tr>
+                  <tr><td>Shift + R</td><td>Reset Camera Position</td></tr>
+                  <tr><td>Shift + S</td><td>Save Image</td></tr>
+                </table>
+
+                <h1>About</h1>
+                <div id="about">
+                  This page was made with <a href="https://www.qgis.org/" target="_blank">QGIS</a> and <a href="https://github.com/minorua/Qgis2threejs" target="_blank">Qgis2threejs</a> plugin.
+                  Dependent JavaScript libraries are
+                  <a href="https://threejs.org/" target="_blank">three.js</a>, 
+                  <a href="https://code.google.com/p/dat-gui/" target="_blank">dat-gui</a>
+                  <span id="lib_proj4js"> and <a href="https://trac.osgeo.org/proj4js/" target="_blank">Proj4js</a></span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- header and footer -->
+          <div id="header"></div>
+          <div id="footer"></div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+
+<script>
+
+if (typeof proj4 === "undefined") document.getElementById("lib_proj4js").style.display = "none";
+var app = Q3D.application,
+    container = document.getElementById("view");
+
+app.init(container);      // initialize application
+
+// when all relevant files have been loaded into the scene
+app.addEventListener("sceneLoaded", function () {
+  $("#loader").css("display","none");
+  // set custom plane z range
+  var box = new THREE.Box3().setFromObject(app.scene),
+      zMin = app.scene.toMapCoordinates(0, 0, box.min.y).z,
+      zMax = app.scene.toMapCoordinates(0, 0, box.max.y).z;
+  Q3D.gui.initCustomPlaneFolder(zMin, zMax);
+});
+
+// load the scene
+app.loadSceneFile("./data/index/scene.json", function () {
+  app.start();
+
+  Q3D.gui.init();   // initialize dat-gui panel
+
+  
+  ////-----------------------SKYBOX---------------------------/////
+  var cubeMap = new THREE.CubeTexture( [] );
+    cubeMap.format = THREE.RGBFormat;
+
+    var loader = new THREE.ImageLoader();
+    loader.load( './threejs/skybox.png', function ( image ) {
+
+      var getSide = function ( x, y ) {
+
+        var size = 1024;
+
+        var canvas = document.createElement( 'canvas' );
+        canvas.width = size;
+        canvas.height = size;
+
+        var context = canvas.getContext( '2d' );
+        context.drawImage( image, - x * size, - y * size );
+
+        return canvas;
+
+      };
+
+      cubeMap.images[ 0 ] = getSide( 2, 1 ); // px
+      cubeMap.images[ 1 ] = getSide( 0, 1 ); // nx
+      cubeMap.images[ 2 ] = getSide( 1, 0 ); // py
+      cubeMap.images[ 3 ] = getSide( 1, 2 ); // ny
+      cubeMap.images[ 4 ] = getSide( 1, 1 ); // pz
+      cubeMap.images[ 5 ] = getSide( 3, 1 ); // nz
+      cubeMap.needsUpdate = true;
+
+    } );
+       var cubeShader = THREE.ShaderLib[ 'cube' ];
+    cubeShader.uniforms[ 'tCube' ].value = cubeMap;
+
+    var skyBoxMaterial = new THREE.ShaderMaterial( {
+      fragmentShader: cubeShader.fragmentShader,
+      vertexShader: cubeShader.vertexShader,
+      uniforms: cubeShader.uniforms,
+      depthWrite: false,
+      side: THREE.BackSide
+    } );
+
+    var skyBox = new THREE.Mesh(
+      new THREE.BoxGeometry( 5000, 5000, 5000 ),
+      skyBoxMaterial
+    );
+
+    app.scene.add( skyBox );
+
+    skyBox.position.z= 150;
+
+  // North arrow inset
+  if (Q3D.Config.northArrow.visible) app.buildNorthArrow(document.getElementById("northarrow"), app.scene.userData.rotation);
+  
+});
+</script>
+</body>
+</html>
